@@ -1,0 +1,128 @@
+package com.webutils;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
+
+import com.utils.JsonUtil;
+
+public class ResourcePackages {
+
+	public static final String IS_FOLDER = "(\\/[a-zA-Z0-9_.-]+)+\\/";
+	public static final String MODULE_FILE = "/module.properties";
+	public static final String FILE_KEY = "files";
+	public static final String AT_KEY = "@";
+	public static final String AT_SEPERATOR = ",";
+	public static final String EMPTY_STRING = "/";
+	public static final String EXT_CSS = ".css";
+	public static final String EXT_JS = ".js";
+
+	private Map<String, String> moduleFiles = new Hashtable<String, String>();
+
+	private Map<String, Map<String, List<String>>> moduleCache = new Hashtable<String, Map<String, List<String>>>();
+
+	public void scanPacks(ServletContext context, String path) {
+		Set<String> paths = context.getResourcePaths(path);
+
+		for (String ipath : paths) {
+			if (ipath.matches(IS_FOLDER)) {
+				scanPacks(context, ipath);
+			} else if (ipath.endsWith(MODULE_FILE)) {
+				try {
+					scanFile(context, ipath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (ipath.endsWith(EXT_JS) || ipath.endsWith(EXT_CSS)) {
+				String[] splittedpath = ipath.split("/");
+				moduleFiles.put(splittedpath[splittedpath.length-1], ipath);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void scanFile(ServletContext context, String filePath)
+			throws IOException, InvalidFileFormatException {
+		Ini ini = new Ini(context.getResourceAsStream(filePath));
+		Map<String, Object> packs = JsonUtil.toMap(ini);
+		String fileFolder = filePath.replaceAll(MODULE_FILE, EMPTY_STRING);
+		for (Entry<String, Object> packsEntry : packs.entrySet()) {
+			Map<String, List<String>> formattedPack = parsePack(fileFolder,
+					(Map<String, String>) packsEntry.getValue());
+			this.moduleCache.put(packsEntry.getKey(), formattedPack);
+		}
+	}
+
+	/**
+	 * @param fileFolder
+	 * @param ent
+	 * @return
+	 */
+	private Map<String, List<String>> parsePack(String fileFolder,
+			Map<String, String> pack) {
+		Map<String, List<String>> formattedPack = new HashMap<String, List<String>>();
+		List<String> packFiles = new LinkedList<String>();
+		List<String> dependsOn = null;
+		for (Entry<String, String> packEntry : pack.entrySet()) {
+			String file = packEntry.getValue();
+			if (AT_KEY.equals(packEntry.getKey())) {
+				dependsOn = Arrays.asList(file.split(AT_SEPERATOR));
+			} else {
+				packFiles.add(fileFolder + file);
+			}
+		}
+		formattedPack.put(FILE_KEY, packFiles);
+		formattedPack.put(AT_KEY, dependsOn);
+		return formattedPack;
+	}
+
+	public String writePacks(String[] packs) {
+		Map<String, Boolean> packMap = new HashMap<String, Boolean>();
+		Map<String, Object> filesMap = new LinkedHashMap<String, Object>();
+
+		for (String packName : packs) {
+			getPack(packName, packMap, filesMap);
+		}
+		return "utils.resolvePack("+JsonUtil.toJson(filesMap) + ")";
+	}
+
+	public void getPack(String packName, Map<String, Boolean> packMap,
+			Map<String, Object> filesMap) {
+		if (packMap.get(packName) == null) {
+			Map<String, List<String>> formattedPack = (Map<String, List<String>>) moduleCache
+					.get(packName);
+			if (formattedPack != null) {
+				if (formattedPack.get(AT_KEY) != null) {
+					for (String ipackName : formattedPack.get(AT_KEY)) {
+						getPack(ipackName, packMap, filesMap);
+					}
+				}
+				filesMap.put(packName, formattedPack);
+				/*
+				if (formattedPack.get(FILE_KEY) != null) {
+					for (String ifiles : formattedPack.get(FILE_KEY)) {
+						filesMap.put(ifiles, ifiles);
+					}
+				}*/
+			}
+			packMap.put(packName, Boolean.TRUE);
+		}
+	};
+
+	public String getModulePath(String module) {
+		String[] splittedpath = module.split("/");
+		return moduleFiles.get(splittedpath[splittedpath.length-1]);
+	}
+}
