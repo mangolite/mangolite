@@ -105,10 +105,25 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			preserveAllSemiColons = Boolean
 					.parseBoolean(preserveAllSemiColonsString);
 		}
-		packages.scanPacks(filterConfig.getServletContext(), "/libs/");
+		packages.scanPacks(filterConfig.getServletContext(), getLibPath());
+		packages.scanPacks(filterConfig.getServletContext(), getResourcesPath());
 	}
 
 	public abstract Map<String, String> getCache();
+
+	/**
+	 * WebApp-Relative path of folder to lib files eg : "/lib/"
+	 * 
+	 * @return the lib path
+	 */
+	public abstract String getLibPath();
+
+	/**
+	 * WebApp-Relative path of folder to resources files eg : "/resources/"
+	 * 
+	 * @return
+	 */
+	public abstract String getResourcesPath();
 
 	public String filterURI(String requestURI) {
 		return requestURI;

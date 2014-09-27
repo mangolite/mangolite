@@ -19,6 +19,7 @@ dependencies {
   compile 'com.yahoo.platform.yui:yuicompressor:2.4.6'
   
   compile project(":libs:utils")
+ // compile 'org.swissphpfriends:php-build-plugin:0.1-SNAPSHOT'
   
   // logging
   

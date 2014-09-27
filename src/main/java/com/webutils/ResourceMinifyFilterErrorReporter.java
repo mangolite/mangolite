@@ -1,7 +1,5 @@
 package com.webutils;
 
-import java.io.IOException;
-
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 

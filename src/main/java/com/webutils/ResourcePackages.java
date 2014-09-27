@@ -25,7 +25,7 @@ public class ResourcePackages {
 	public static final String FILE_KEY = "files";
 	public static final String AT_KEY = "@";
 	public static final String AT_SEPERATOR = ",";
-	public static final String EMPTY_STRING = "/";
+	public static final String EMPTY_SLASH = "/";
 	public static final String EXT_CSS = ".css";
 	public static final String EXT_JS = ".js";
 
@@ -35,19 +35,21 @@ public class ResourcePackages {
 
 	public void scanPacks(ServletContext context, String path) {
 		Set<String> paths = context.getResourcePaths(path);
-
-		for (String ipath : paths) {
-			if (ipath.matches(IS_FOLDER)) {
-				scanPacks(context, ipath);
-			} else if (ipath.endsWith(MODULE_FILE)) {
-				try {
-					scanFile(context, ipath);
-				} catch (IOException e) {
-					e.printStackTrace();
+		if (paths != null) {
+			for (String ipath : paths) {
+				if (ipath.matches(IS_FOLDER)) {
+					scanPacks(context, ipath);
+				} else if (ipath.endsWith(MODULE_FILE)) {
+					try {
+						scanFile(context, ipath);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else if (ipath.endsWith(EXT_JS) || ipath.endsWith(EXT_CSS)) {
+					String[] splittedpath = ipath.split("/");
+					moduleFiles.put(splittedpath[splittedpath.length - 1],
+							ipath);
 				}
-			} else if (ipath.endsWith(EXT_JS) || ipath.endsWith(EXT_CSS)) {
-				String[] splittedpath = ipath.split("/");
-				moduleFiles.put(splittedpath[splittedpath.length-1], ipath);
 			}
 		}
 	}
@@ -57,7 +59,7 @@ public class ResourcePackages {
 			throws IOException, InvalidFileFormatException {
 		Ini ini = new Ini(context.getResourceAsStream(filePath));
 		Map<String, Object> packs = JsonUtil.toMap(ini);
-		String fileFolder = filePath.replaceAll(MODULE_FILE, EMPTY_STRING);
+		String fileFolder = filePath.replaceAll(MODULE_FILE, EMPTY_SLASH);
 		for (Entry<String, Object> packsEntry : packs.entrySet()) {
 			Map<String, List<String>> formattedPack = parsePack(fileFolder,
 					(Map<String, String>) packsEntry.getValue());
@@ -95,7 +97,7 @@ public class ResourcePackages {
 		for (String packName : packs) {
 			getPack(packName, packMap, filesMap);
 		}
-		return "utils.resolvePack("+JsonUtil.toJson(filesMap) + ")";
+		return "utils.resolvePack(" + JsonUtil.toJson(filesMap) + ")";
 	}
 
 	public void getPack(String packName, Map<String, Boolean> packMap,
@@ -111,11 +113,10 @@ public class ResourcePackages {
 				}
 				filesMap.put(packName, formattedPack);
 				/*
-				if (formattedPack.get(FILE_KEY) != null) {
-					for (String ifiles : formattedPack.get(FILE_KEY)) {
-						filesMap.put(ifiles, ifiles);
-					}
-				}*/
+				 * if (formattedPack.get(FILE_KEY) != null) { for (String ifiles
+				 * : formattedPack.get(FILE_KEY)) { filesMap.put(ifiles,
+				 * ifiles); } }
+				 */
 			}
 			packMap.put(packName, Boolean.TRUE);
 		}
@@ -123,6 +124,6 @@ public class ResourcePackages {
 
 	public String getModulePath(String module) {
 		String[] splittedpath = module.split("/");
-		return moduleFiles.get(splittedpath[splittedpath.length-1]);
+		return moduleFiles.get(splittedpath[splittedpath.length - 1]);
 	}
 }
