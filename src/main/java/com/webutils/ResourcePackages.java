@@ -28,6 +28,8 @@ public class ResourcePackages {
 	public static final String EMPTY_SLASH = "/";
 	public static final String EXT_CSS = ".css";
 	public static final String EXT_JS = ".js";
+	public static final String UTIL_RESOLVE_PACK_START = "utils.resolvePack(";
+	public static final String UTIL_RESOLVE_PACK_END = ")";
 
 	private Map<String, String> moduleFiles = new Hashtable<String, String>();
 
@@ -46,7 +48,7 @@ public class ResourcePackages {
 						e.printStackTrace();
 					}
 				} else if (ipath.endsWith(EXT_JS) || ipath.endsWith(EXT_CSS)) {
-					String[] splittedpath = ipath.split("/");
+					String[] splittedpath = ipath.split(EMPTY_SLASH);
 					moduleFiles.put(splittedpath[splittedpath.length - 1],
 							ipath);
 				}
@@ -97,7 +99,8 @@ public class ResourcePackages {
 		for (String packName : packs) {
 			getPack(packName, packMap, filesMap);
 		}
-		return "utils.resolvePack(" + JsonUtil.toJson(filesMap) + ")";
+		return UTIL_RESOLVE_PACK_START + JsonUtil.toJson(filesMap)
+				+ UTIL_RESOLVE_PACK_END;
 	}
 
 	public void getPack(String packName, Map<String, Boolean> packMap,
@@ -123,7 +126,7 @@ public class ResourcePackages {
 	};
 
 	public String getModulePath(String module) {
-		String[] splittedpath = module.split("/");
+		String[] splittedpath = module.split(EMPTY_SLASH);
 		return moduleFiles.get(splittedpath[splittedpath.length - 1]);
 	}
 }
