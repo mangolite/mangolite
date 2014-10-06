@@ -56,6 +56,9 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	private static final String PARAM_NOMUNGE = "nomunge";
 	private static final ResourcePackages packages = new ResourcePackages();
 	protected FilterConfig filterConfig;
+	public static enum FILE_TYPE {
+		JS, CSS, TEXT,OTHER;
+	}
 	/**
 	 * Insert a line break after the specified column number
 	 */
@@ -134,32 +137,46 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		// ServletOutputStream servletOutputStream =
-		// response.getOutputStream();
-		response.setContentType("application/x-javascript; charset=UTF-8");
+		
 		// response.setCharacterEncoding("UTF-8");
 		ServletContext context = filterConfig.getServletContext();
-		String requestURI = filterURI(request.getRequestURI());
-		InputStream inputStream = context.getResourceAsStream(requestURI);
-		if (inputStream == null) {
-			inputStream = context.getResourceAsStream(packages
-					.getModulePath(requestURI));
+		//String requestedURI =request.getRequestURI();
+		String requestedURI =request.getServletPath();
+		FILE_TYPE fileType = FILE_TYPE.OTHER;
+		
+		if (requestedURI.endsWith(ResourcePackages.EXT_JS)) {
+			fileType = FILE_TYPE.JS;
+			response.setContentType("application/x-javascript; charset=UTF-8");
+		} else if (requestedURI.endsWith(ResourcePackages.EXT_CSS)) {
+			fileType = FILE_TYPE.CSS;
+			response.setContentType("text/css; charset=UTF-8");
 		}
-		String morefiles = request.getParameter("@");
-		String packsParam = request.getParameter("$");
-		Boolean skipMinification = (request.getParameter("no") != null) ? Boolean.TRUE
-				: Boolean.FALSE;
-		String[] files = {};
-		if (morefiles != null) {
-			files = morefiles.split(",");
-		}
-		ResourceWriter writer = new ResourceWriter(response);
-		if (packsParam != null) {
-			writePacks(writer, packsParam.split(","));
-		} else if (WebDebugUtils.isMinResourcesEnabled() && !skipMinification) {
-			writeMinifiedFiles(writer, context, requestURI, inputStream, files);
+		
+		if (!requestedURI.startsWith("/webjars/")) {
+			String requestURI = filterURI(requestedURI);
+			InputStream inputStream = context.getResourceAsStream(requestURI);
+			if (inputStream == null) {
+				inputStream = context.getResourceAsStream(packages
+						.getModulePath(requestURI));
+			}
+			String morefiles = request.getParameter("@");
+			String packsParam = request.getParameter("$");
+			Boolean skipMinification = (request.getParameter("no") != null) ? Boolean.TRUE
+					: Boolean.FALSE;
+			String[] files = {};
+			if (morefiles != null) {
+				files = morefiles.split(",");
+			}
+			ResourceWriter writer = new ResourceWriter(response);
+			if (packsParam != null) {
+				writePacks(writer, packsParam.split(","));
+			} else if (WebDebugUtils.isMinResourcesEnabled() && !skipMinification) {
+				writeMinifiedFiles(writer, context, requestURI, fileType, inputStream,files);
+			} else {
+				writeOriginalFiles(writer, context, inputStream, files);
+			}
 		} else {
-			writeOriginalFiles(writer, context, inputStream, files);
+			filterChain.doFilter(request, response);
 		}
 	}
 
@@ -171,17 +188,17 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	}
 
 	private void writeMinifiedFiles(ResourceWriter writer,
-			ServletContext context, String requestURI, InputStream inputStream,
-			String[] files) throws IOException {
+			ServletContext context, String requestURI, FILE_TYPE fileType,
+			InputStream inputStream,String[] files) throws IOException {
 		// PrintWriter printWriter = writer.getWriter();
-		writeMinifiedFileToServletOutputStream(requestURI, inputStream, writer);
+		writeMinifiedFileToServletOutputStream(requestURI, fileType, inputStream, writer);
 		for (String file : files) {
 			if (file != null && !file.isEmpty()) {
 				InputStream inputStreamTemp = context
 						.getResourceAsStream(filterURI(file));
 				if (inputStreamTemp != null) {
 					writeMinifiedFileToServletOutputStream(file,
-							inputStreamTemp, writer);
+							fileType, inputStreamTemp, writer);
 				}
 			}
 		}
@@ -205,7 +222,7 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	}
 
 	private void writeMinifiedFileToServletOutputStream(String requestURI,
-			InputStream inputStream, ResourceWriter writer) throws IOException {
+			FILE_TYPE fileType, InputStream inputStream,ResourceWriter writer) throws IOException {
 		String s;
 		if (!WebDebugUtils.isResoucesCacheEnabled()
 				|| !getCache().containsKey(requestURI)) {
