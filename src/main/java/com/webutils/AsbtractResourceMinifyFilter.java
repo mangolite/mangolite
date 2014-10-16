@@ -248,6 +248,7 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			} else {
 				s = "This file format is not supported by this filter. Only .css and .js are supported";
 			}
+			
 			if (WebDebugUtils.isResoucesCacheEnabled())
 				getCache().put(requestURI, s);
 		} else {
