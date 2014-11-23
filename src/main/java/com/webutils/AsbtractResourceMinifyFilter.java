@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -315,6 +317,14 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 
 		StringBuffer buffer = out.getBuffer();
 		return buffer.toString();
+	}
+	
+	public List<String> getResourcerlPatterns(){
+		List<String> urlPatterns = new ArrayList<String>();
+		urlPatterns.add("*.js");
+		urlPatterns.add("*.css");
+		urlPatterns.add("*.json");
+		return urlPatterns;
 	}
 
 }
