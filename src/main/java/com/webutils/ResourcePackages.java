@@ -28,7 +28,7 @@ public class ResourcePackages {
 	public static final String EMPTY_SLASH = "/";
 	public static final String EXT_CSS = ".css";
 	public static final String EXT_JS = ".js";
-	public static final String UTIL_RESOLVE_PACK_START = "utils.resolvePack(";
+	public static final String UTIL_RESOLVE_PACK_START = "(";
 	public static final String UTIL_RESOLVE_PACK_END = ")";
 
 	private Map<String, String> moduleFiles = new Hashtable<String, String>();
@@ -92,15 +92,21 @@ public class ResourcePackages {
 		return formattedPack;
 	}
 
-	public String writePacks(String[] packs) {
+	public String writePacks(String[] packs, String cb) {
 		Map<String, Boolean> packMap = new HashMap<String, Boolean>();
 		Map<String, Object> filesMap = new LinkedHashMap<String, Object>();
 
 		for (String packName : packs) {
+			if ("*".equalsIgnoreCase(packName))
+				return writePackageInfo(cb, JsonUtil.toJson(moduleCache));
 			getPack(packName, packMap, filesMap);
 		}
-		return UTIL_RESOLVE_PACK_START + JsonUtil.toJson(filesMap)
-				+ UTIL_RESOLVE_PACK_END;
+		return writePackageInfo(cb, JsonUtil.toJson(filesMap));
+	}
+
+	public String writePackageInfo(String cb, String filesMapString) {
+		return ((cb == null) ? UTIL_RESOLVE_PACK_START : (cb + UTIL_RESOLVE_PACK_START))
+				+ filesMapString+ UTIL_RESOLVE_PACK_END;
 	}
 
 	public void getPack(String packName, Map<String, Boolean> packMap,

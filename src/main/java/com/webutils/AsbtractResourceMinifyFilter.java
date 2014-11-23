@@ -178,7 +178,8 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			}
 			ResourceWriter writer = new ResourceWriter(response);
 			if (bundleParam != null) {
-				writePacks(writer, bundleParam.split(LIST_DELIMETER));
+				String cb = request.getParameter("cb");
+				writePacks(writer, bundleParam.split(LIST_DELIMETER),cb);
 			} else if (WebDebugUtils.isMinResourcesEnabled()
 					&& !skipMinification) {
 				writeMinifiedFiles(writer, context, requestURI, fileType,
@@ -191,10 +192,10 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 		}
 	}
 
-	private void writePacks(ResourceWriter writer, String[] packs)
+	private void writePacks(ResourceWriter writer, String[] packs, String cb)
 			throws IOException {
 		// PrintWriter printWriter = response.getWriter();
-		write(packages.writePacks(packs), writer);
+		write(packages.writePacks(packs,cb), writer);
 		writer.getPrintWriter().close();
 	}
 
