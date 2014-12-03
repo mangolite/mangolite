@@ -38,6 +38,9 @@ public class ResourceWriter {
 	}
 
 	public void write(InputStream inputStream) throws IOException {
+		if(inputStream==null){
+			return;
+		}
 		ByteStreams.copy(inputStream, getOutputStream());
 	}
 
