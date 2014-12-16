@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
  */
 @Target(value = ElementType.TYPE)
 @Retention(value = RetentionPolicy.RUNTIME)
-public @interface ActionHandler {
+public @interface HandlerScan {
 	public static final String defaultString = "";
 
-	String name() default defaultString;
+	String value();
 
 }
