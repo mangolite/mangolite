@@ -3,10 +3,12 @@ package com.webutils;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import com.utils.ContextUtil;
 
 @SuppressWarnings("unchecked")
-public final class WebContextUtil {
+public final class WebAppContext {
 	// following keys in the context map is reserved by infra team
 	public static final String USER = "user";
 	public static final String CONTEXTURL = "contextURL";
@@ -14,7 +16,7 @@ public final class WebContextUtil {
 	public static final String WEB_REQUEST = "web_request";
 	public static final String COMPONENT_WEBSITE = "website";
 
-	private WebContextUtil() {
+	private WebAppContext() {
 		// Sonar code fix --> Utility classes should not have a public of
 		// default constructor
 		throw new IllegalStateException("Sorry!!");
@@ -50,5 +52,22 @@ public final class WebContextUtil {
 
 	public static String getUserToken() {
 		return ((WebSockRequest) get().get(WEB_REQUEST)).getUserToken();
+	}
+
+	public static void setSession(HttpSession session) {
+		// TODO Auto-generated method stub
+	}
+	
+	public static void setUser(AbstractUser user) {
+		// TODO Auto-generated method stub
+	}
+
+	public static AbstractUser getUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void clear() {
+		get().clear();
 	}
 }

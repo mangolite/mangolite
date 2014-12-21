@@ -1,4 +1,4 @@
-package com.webutils.handler;
+package com.webutils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,22 +11,32 @@ import org.reflections.Reflections;
 
 import com.utils.JsonUtil;
 import com.utils.Log;
-import com.webutils.AbstractHandler;
-import com.webutils.WebSockRequest;
 import com.webutils.annotations.ActionHandler;
 import com.webutils.annotations.HandlerAction;
 import com.webutils.annotations.HandlerScan;
+import com.webutils.annotations.ModelScan;
+import com.webutils.annotations.RxModel;
+import com.webutils.annotations.RxModel.ModelType;
 
 /**
  * @author <a mailto:lalit.tanwar07@gmail.com> Lalit Tanwar</a>
  * @version 1.0
  * @lastModified Aug 19, 2014
  */
-public class AbstractHandlerFactory {
+public class AbstractWebAppClient {
 
 	private static final Log LOG = new Log();
 	private static Map<String, AbstractHandler> handlerMapping = new ConcurrentHashMap<String, AbstractHandler>();
 	private static Map<String, Method> actionMapping = new ConcurrentHashMap<String, Method>();
+
+	private static Constructor<?> userConstructor;
+	static {
+		try {
+			userConstructor = AbstractUser.class.getConstructor();
+		} catch (NoSuchMethodException | SecurityException e) {
+			LOG.error(e);
+		}
+	}
 
 	{
 
@@ -66,6 +76,41 @@ public class AbstractHandlerFactory {
 				LOG.error(e);
 			}
 		}
+
+		String modelScanPath = this.getClass().getAnnotation(ModelScan.class)
+				.value();
+		Reflections modelReflections = new Reflections(modelScanPath);
+		Set<Class<?>> modelAnnotated = modelReflections
+				.getTypesAnnotatedWith(RxModel.class);
+		for (Class<?> annotatedOne : modelAnnotated) {
+			ModelType cName = annotatedOne.getAnnotation(RxModel.class).value();
+			try {
+				switch (cName) {
+				case USER: {
+					userConstructor = annotatedOne.getConstructor();
+				}
+					break;
+				default:
+					break;
+				}
+			} catch (NoSuchMethodException e) {
+				LOG.error(e);
+			} catch (SecurityException e) {
+				LOG.error(e);
+			} catch (IllegalArgumentException e) {
+				LOG.error(e);
+			}
+		}
+	}
+
+	public static AbstractUser getUser() {
+		try {
+			return (AbstractUser) userConstructor.newInstance();
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
+			LOG.error(e);
+		}
+		return null;
 	}
 
 	/**
