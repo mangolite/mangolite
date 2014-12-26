@@ -1,20 +1,46 @@
 package com.webutils;
 
-public class AbstractUser {
+public abstract class AbstractUser {
+
+	private boolean valid = false;
 
 	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.valid;
 	}
 
+	public void isValid(boolean valid) {
+		this.valid = valid;
+	}
+
+	private String sessionID = "";
+
 	public String getSessionID() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.sessionID;
+	}
+
+	public void setSessionID(String sessionID) {
+		this.sessionID = sessionID;
 	}
 
 	public long getUid() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	private int sessionTimeOut = 1;
+
+	public void setSessionTimout(int minutes) {
+		this.sessionTimeOut = minutes;
+	}
+
+	public int getSessionTimout() {
+		return this.sessionTimeOut;
+	}
+
+	private boolean setTimeOut = false;
+
+	public boolean isSetTimeOut() {
+		return this.setTimeOut;
+	}
+
+	public abstract void auth(String userName, String passWord);
 }

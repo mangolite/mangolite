@@ -15,10 +15,9 @@ public final class WebAppContext {
 	public static final String REQUESTCONTEXTURL = "requestcontext";
 	public static final String WEB_REQUEST = "web_request";
 	public static final String COMPONENT_WEBSITE = "website";
+	public static final String WEBSITE_USER = "user";
 
 	private WebAppContext() {
-		// Sonar code fix --> Utility classes should not have a public of
-		// default constructor
 		throw new IllegalStateException("Sorry!!");
 	}
 
@@ -54,17 +53,12 @@ public final class WebAppContext {
 		return ((WebSockRequest) get().get(WEB_REQUEST)).getUserToken();
 	}
 
-	public static void setSession(HttpSession session) {
-		// TODO Auto-generated method stub
-	}
-	
 	public static void setUser(AbstractUser user) {
-		// TODO Auto-generated method stub
+		get().put(WEBSITE_USER, user);
 	}
 
 	public static AbstractUser getUser() {
-		// TODO Auto-generated method stub
-		return null;
+		return (AbstractUser) get().get(WEBSITE_USER);
 	}
 
 	public static void clear() {

@@ -37,13 +37,16 @@ public class AccessInterceptor implements HandlerInterceptor {
 			user = (AbstractUser) session.getAttribute("currentSessionUser");
 			if (user == null) {
 				user = AbstractWebAppClient.getUser();
+				session.setAttribute("currentSessionUser",user);
+				user.setSessionID(session.getId());
+				session.setMaxInactiveInterval(60);
 			}
 			if (user == null) {
 				response.sendError(AUTH_ERROR_CODE, AUTH_ERROR_MESSAGE);
 				return false;
 			}
 		}
-		AccessInterceptor.setContextForUser(user);
+		WebAppContext.setUser(user);
 		return true;
 	}
 
@@ -60,10 +63,14 @@ public class AccessInterceptor implements HandlerInterceptor {
 		try {
 			AbstractUser user = WebAppContext.getUser();
 			if (user != null) {
+				if(user.isSetTimeOut()){
+					HttpSession session = request.getSession(true);
+					session.setMaxInactiveInterval(user.getSessionTimout()*60);
+				}
 				// UPDATE CAHCE
 			}
 		} finally {
-			AccessInterceptor.clearUserContext();
+			WebAppContext.clear();
 		}
 	}
 
@@ -78,18 +85,6 @@ public class AccessInterceptor implements HandlerInterceptor {
 			}
 		}
 		return jSessionID;
-	}
-
-	public static void clearUserContext() {
-		WebAppContext.clear();
-	}
-
-	public static void setContextForUser(AbstractUser user, Long traceID) {
-		WebAppContext.setUser(user);
-	}
-
-	public static void setContextForUser(AbstractUser user) {
-		setContextForUser(user, Long.valueOf(UniqueID.generate()));
 	}
 
 	public static Cookie getSessionCookie(AbstractUser user) {
