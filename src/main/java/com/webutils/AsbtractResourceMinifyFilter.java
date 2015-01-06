@@ -119,6 +119,7 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			preserveAllSemiColons = Boolean
 					.parseBoolean(preserveAllSemiColonsString);
 		}
+		packages.setAppContext(getAppContext());
 		packages.scanPacks(filterConfig.getServletContext(), getLibPath());
 		packages.scanPacks(filterConfig.getServletContext(), getResourcesPath());
 	}
@@ -138,6 +139,15 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	 * @return
 	 */
 	public abstract String getResourcesPath();
+	
+	/**
+	 * Website context for static resources
+	 * for example : if your files are accessible at http://mysite.com/app/resources
+	 * then appContext is app
+	 * 
+	 * @return
+	 */
+	public abstract String getAppContext();
 
 	public String filterURI(String requestURI) {
 		return requestURI;

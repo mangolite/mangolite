@@ -31,9 +31,15 @@ public class ResourcePackages {
 	public static final String UTIL_RESOLVE_PACK_START = "(";
 	public static final String UTIL_RESOLVE_PACK_END = ")";
 
+	private String appContext = "";
+	
 	private Map<String, String> moduleFiles = new Hashtable<String, String>();
 
 	private Map<String, Map<String, List<String>>> moduleCache = new Hashtable<String, Map<String, List<String>>>();
+	
+	public void setAppContext(String appContext) {
+		this.appContext = "/"+appContext;
+	}
 
 	public void scanPacks(ServletContext context, String path) {
 		Set<String> paths = context.getResourcePaths(path);
@@ -84,7 +90,7 @@ public class ResourcePackages {
 			if (AT_KEY.equals(packEntry.getKey())) {
 				dependsOn = Arrays.asList(file.split(AT_SEPERATOR));
 			} else {
-				packFiles.add(fileFolder + file);
+				packFiles.add(this.appContext + fileFolder + file);
 			}
 		}
 		formattedPack.put(FILE_KEY, packFiles);
