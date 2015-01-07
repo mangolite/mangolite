@@ -7,6 +7,10 @@ package com.webutils;
  */
 public class AbstractWebRequest {
 
+	public AbstractWebRequest(String data) {
+		this.data = data;
+	}
+
 	private String data;
 
 	public String getData() {

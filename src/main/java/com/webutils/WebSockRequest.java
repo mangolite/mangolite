@@ -6,17 +6,11 @@ package com.webutils;
  * @lastModified Jul 17, 2014
  */
 public class WebSockRequest extends AbstractWebRequest  {
+	public WebSockRequest(String data) {
+		super(data);
+	}
+
 	private String userToken;
-
-	private String data;
-
-	public String getData() {
-		return data;
-	}
-
-	public void setData(String data) {
-		this.data = data;
-	}
 
 	public String getUserToken() {
 		return userToken;

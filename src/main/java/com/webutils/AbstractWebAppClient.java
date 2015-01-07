@@ -123,18 +123,29 @@ public class AbstractWebAppClient {
 	 * @throws IllegalAccessException
 	 */
 	public HandlerResponse invokeHanldler(String handlerName,
-			String actionName, WebSockRequest message)
-			throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+			String actionName, String data) throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		AbstractHandler handeler = handlerMapping.get(handlerName);
 		Method md = actionMapping.get(handlerName + "_" + actionName);
 		if (md != null) {
-			Class<?> clazz = md.getParameterTypes()[0];
-			return new HandlerResponse(md.invoke(handeler,
-					JsonUtil.fromJson(message.getData(), clazz)));
+			HandlerResponse resp = new HandlerResponse();
+			
+			Class<?>[] paramClazzes = md.getParameterTypes();
+			Object arglist[] = new Object[paramClazzes.length];
+			for(int i=0; i<paramClazzes.length;i++){
+				Class<?> paramClazz = paramClazzes[i];
+				if(HandlerResponse.class.isAssignableFrom(paramClazz)){
+					arglist[i] = resp;
+				} else if(AbstractUser.class.isAssignableFrom(paramClazz)){
+					arglist[i] = WebAppContext.getUser();
+				} else {
+					arglist[i] = JsonUtil.fromJson(data, paramClazz);
+				}
+			}
+			resp.setData(md.invoke(handeler,arglist));
+			return resp;
 		} else {
 			return null;
 		}
 	}
-
 }

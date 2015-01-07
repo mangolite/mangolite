@@ -4,7 +4,7 @@ public abstract class AbstractResponse {
 
 	public abstract Object getData();
 
-	private Boolean success;
+	private Boolean success = true;
 
 	public Boolean getSuccess() {
 		return success;
