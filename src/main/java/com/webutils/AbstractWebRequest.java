@@ -5,7 +5,7 @@ package com.webutils;
  * @version 1.0
  * @lastModified Jul 17, 2014
  */
-public class HandlerRequest extends AbstractWebRequest {
+public class AbstractWebRequest {
 
 	private String data;
 

@@ -5,7 +5,7 @@ package com.webutils;
  * @version 1.0
  * @lastModified Jul 17, 2014
  */
-public class WebSockRequest {
+public class WebSockRequest extends AbstractWebRequest  {
 	private String userToken;
 
 	private String data;
