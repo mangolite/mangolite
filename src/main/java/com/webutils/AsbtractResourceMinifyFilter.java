@@ -66,10 +66,6 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	private static final ResourcePackages packages = new ResourcePackages();
 	protected FilterConfig filterConfig;
 
-	public static enum FILE_TYPE {
-		JS, CSS, TEXT, OTHER;
-	}
-
 	/**
 	 * Insert a line break after the specified column number
 	 */
@@ -119,35 +115,10 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			preserveAllSemiColons = Boolean
 					.parseBoolean(preserveAllSemiColonsString);
 		}
-		packages.setAppContext(getAppContext());
-		packages.scanPacks(filterConfig.getServletContext(), getLibPath());
-		packages.scanPacks(filterConfig.getServletContext(), getResourcesPath());
+		packages.scanResources(filterConfig.getServletContext());
 	}
 
 	public abstract Map<String, String> getCache();
-
-	/**
-	 * WebApp-Relative path of folder to lib files eg : "/lib/"
-	 * 
-	 * @return the lib path
-	 */
-	public abstract String getLibPath();
-
-	/**
-	 * WebApp-Relative path of folder to resources files eg : "/resources/"
-	 * 
-	 * @return
-	 */
-	public abstract String getResourcesPath();
-	
-	/**
-	 * Website context for static resources
-	 * for example : if your files are accessible at http://mysite.com/app/resources
-	 * then appContext is app
-	 * 
-	 * @return
-	 */
-	public abstract String getAppContext();
 
 	public String filterURI(String requestURI) {
 		return requestURI;
@@ -163,13 +134,13 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 		ServletContext context = filterConfig.getServletContext();
 		// String requestedURI =request.getRequestURI();
 		String requestedURI = request.getServletPath();
-		FILE_TYPE fileType = FILE_TYPE.OTHER;
+		WebUtilsEnum.FILE_TYPE fileType = WebUtilsEnum.FILE_TYPE.OTHER;
 
 		if (requestedURI.endsWith(ResourcePackages.EXT_JS)) {
-			fileType = FILE_TYPE.JS;
+			fileType = WebUtilsEnum.FILE_TYPE.JS;
 			response.setContentType(JS_CONTENT_TYPE);
 		} else if (requestedURI.endsWith(ResourcePackages.EXT_CSS)) {
-			fileType = FILE_TYPE.CSS;
+			fileType = WebUtilsEnum.FILE_TYPE.CSS;
 			response.setContentType(CSS_CONTENT_TYPE);
 		}
 
@@ -191,9 +162,9 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			ResourceWriter writer = new ResourceWriter(response);
 			if (bundleParam != null) {
 				String cb = request.getParameter("cb");
-				writePacks(writer, bundleParam.split(LIST_DELIMETER),cb);
-			} else if (WebDebugUtils.isMinResourcesEnabled()
-					&& !skipMinification) {
+				writePacks(writer, bundleParam.split(LIST_DELIMETER), cb);
+			} else if (AbstractWebAppClient.getProperties()
+					.isMinResourcesEnabled(fileType) && !skipMinification) {
 				writeMinifiedFiles(writer, context, requestURI, fileType,
 						inputStream, files);
 			} else {
@@ -207,13 +178,14 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	private void writePacks(ResourceWriter writer, String[] packs, String cb)
 			throws IOException {
 		// PrintWriter printWriter = response.getWriter();
-		write(packages.writePacks(packs,cb), writer);
+		write(packages.writePacks(packs, cb), writer);
 		writer.getPrintWriter().close();
 	}
 
 	private void writeMinifiedFiles(ResourceWriter writer,
-			ServletContext context, String requestURI, FILE_TYPE fileType,
-			InputStream inputStream, String[] files) throws IOException {
+			ServletContext context, String requestURI,
+			WebUtilsEnum.FILE_TYPE fileType, InputStream inputStream,
+			String[] files) throws IOException {
 		// PrintWriter printWriter = writer.getWriter();
 		if (inputStream != null) {
 			writeMinifiedFileToServletOutputStream(requestURI, fileType,
@@ -249,20 +221,22 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	}
 
 	private void writeMinifiedFileToServletOutputStream(String requestURI,
-			FILE_TYPE fileType, InputStream inputStream, ResourceWriter writer)
-			throws IOException {
+			WebUtilsEnum.FILE_TYPE fileType, InputStream inputStream,
+			ResourceWriter writer) throws IOException {
 		String s;
-		if (!WebDebugUtils.isResoucesCacheEnabled()
+		if (!AbstractWebAppClient.getProperties().isResoucesCacheEnabled(
+				fileType)
 				|| !getCache().containsKey(requestURI)) {
-			if (fileType == FILE_TYPE.JS) {
+			if (fileType == WebUtilsEnum.FILE_TYPE.JS) {
 				s = getCompressedJavaScript(inputStream, requestURI);
-			} else if (fileType == FILE_TYPE.CSS) {
+			} else if (fileType == WebUtilsEnum.FILE_TYPE.CSS) {
 				s = getCompressedCss(inputStream);
 			} else {
 				s = "This file format is not supported by this filter. Only .css and .js are supported";
 			}
-			
-			if (WebDebugUtils.isResoucesCacheEnabled())
+
+			if (AbstractWebAppClient.getProperties().isResoucesCacheEnabled(
+					fileType))
 				getCache().put(requestURI, s);
 		} else {
 			s = getCache().get(requestURI);
@@ -328,12 +302,13 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 		StringBuffer buffer = out.getBuffer();
 		return buffer.toString();
 	}
-	
-	public List<String> getResourcerlPatterns(){
+
+	public List<String> getResourcerlPatterns() {
 		List<String> urlPatterns = new ArrayList<String>();
 		urlPatterns.add("*.js");
 		urlPatterns.add("*.css");
 		urlPatterns.add("*.json");
+		urlPatterns.add("*.html");
 		return urlPatterns;
 	}
 

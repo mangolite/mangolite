@@ -31,14 +31,15 @@ public class ResourcePackages {
 	public static final String UTIL_RESOLVE_PACK_START = "(";
 	public static final String UTIL_RESOLVE_PACK_END = ")";
 
-	private String appContext = "";
-	
 	private Map<String, String> moduleFiles = new Hashtable<String, String>();
 
 	private Map<String, Map<String, List<String>>> moduleCache = new Hashtable<String, Map<String, List<String>>>();
-	
-	public void setAppContext(String appContext) {
-		this.appContext = "/"+appContext;
+
+	public void scanResources(ServletContext context) {
+		this.scanPacks(context, AbstractWebAppClient.getProperties()
+				.getStaticLibPath());
+		this.scanPacks(context, AbstractWebAppClient.getProperties()
+				.getStaticAppPath());
 	}
 
 	public void scanPacks(ServletContext context, String path) {
@@ -90,7 +91,8 @@ public class ResourcePackages {
 			if (AT_KEY.equals(packEntry.getKey())) {
 				dependsOn = Arrays.asList(file.split(AT_SEPERATOR));
 			} else {
-				packFiles.add(this.appContext + fileFolder + file);
+				packFiles.add(AbstractWebAppClient.getProperties()
+						.getAppContext() + fileFolder + file);
 			}
 		}
 		formattedPack.put(FILE_KEY, packFiles);
@@ -111,8 +113,10 @@ public class ResourcePackages {
 	}
 
 	public String writePackageInfo(String cb, String filesMapString) {
-		return ((cb == null) ? UTIL_RESOLVE_PACK_START : (cb + UTIL_RESOLVE_PACK_START))
-				+ filesMapString+ UTIL_RESOLVE_PACK_END;
+		return ((cb == null) ? UTIL_RESOLVE_PACK_START
+				: (cb + UTIL_RESOLVE_PACK_START))
+				+ filesMapString
+				+ UTIL_RESOLVE_PACK_END;
 	}
 
 	public void getPack(String packName, Map<String, Boolean> packMap,
