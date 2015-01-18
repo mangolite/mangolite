@@ -15,5 +15,5 @@ public @interface AppProperties {
 	public static final String defaultString = "";
 
 	String value();
-
+ 
 }
