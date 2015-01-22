@@ -54,11 +54,18 @@ public final class WebAppContext {
 	}
 
 	public static void setUser(AbstractUser user) {
+		get().put("wasValid", user.isValid());
 		get().put(WEBSITE_USER, user);
 	}
 
 	public static AbstractUser getUser() {
 		return (AbstractUser) get().get(WEBSITE_USER);
+	}
+
+	public static Boolean wasUserValidated(){
+		AbstractUser user = (AbstractUser) get().get(WEBSITE_USER);
+		get().put("isValid", user.isValid());
+		return !((Boolean)get().get("wasValid")) && !((Boolean)get().get("isValid"));
 	}
 
 	public static void clear() {

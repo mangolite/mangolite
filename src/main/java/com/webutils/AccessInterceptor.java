@@ -63,8 +63,10 @@ public class AccessInterceptor implements HandlerInterceptor {
 		try {
 			AbstractUser user = WebAppContext.getUser();
 			if (user != null) {
-				if(user.isSetTimeOut()){
+				if(WebAppContext.wasUserValidated()){
 					HttpSession session = request.getSession(true);
+					//request.getSession().
+					//request.login(user.getUsername(), user.getPassword());
 					session.setMaxInactiveInterval(user.getSessionTimout()*60);
 				}
 				// UPDATE CAHCE

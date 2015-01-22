@@ -10,7 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
  */
 public class StompClient {
 	private static SimpMessagingTemplate simpMessagingTemplate;
-	private static final String USER_PREFIX = "/notify/";
+	private static final String USER_PREFIX = "/queue/";
 	private static final String ALL_PREFIX = "/event/";
 
 	@Autowired

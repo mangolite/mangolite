@@ -2,6 +2,26 @@ package com.webutils;
 
 public abstract class AbstractUser {
 
+	private String username;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUserName(String newUsername) {
+		username = newUsername;
+	}
+
+	private String password;
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String newPassword) {
+		password = newPassword;
+	}
+
 	private boolean valid = false;
 
 	public boolean isValid() {
