@@ -1,4 +1,5 @@
-package com.webutils;
+package com.webutils.abstracts;
+
 
 public class HandlerResponse extends AbstractResponse {
 

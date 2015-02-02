@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-	def springVersion = "3.1.0.RELEASE"
+	def springVersion = "4.1.4.RELEASE"//"4.0.0.RC2"//"3.2.5.RELEASE"
 	def tomcatVersion = "7.0.53"
 
 	compile "javax.servlet:javax.servlet-api:3.0.1"
@@ -40,7 +40,8 @@ dependencies {
 	compile "org.springframework:spring-webmvc:$springVersion"
 	compile "org.springframework:spring-web:$springVersion"
 	compile "org.springframework:spring-context:$springVersion"
-	compile "org.springframework:spring-aspects:$springVersion"
+	compile "org.springframework:spring-aspects"
+	//compile "org.springframework.security:spring-security-core:$springVersion"
 
 	compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
 
@@ -48,6 +49,11 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-websocket")
 	compile("org.springframework:spring-messaging")
 	compile("org.reflections:reflections:0.9.9-RC1")
+	compile("org.springframework.boot:spring-boot-starter-security")
+	compile 'org.springframework:spring-context-support'
+	//compile 'org.springframework.security:spring-security-core'
+	compile 'org.springframework.session:spring-session:1.0.0.RELEASE'
+	
 
 	//Minifier
 	compile 'com.yahoo.platform.yui:yuicompressor:2.3.6'

@@ -1,4 +1,4 @@
-package com.webutils;
+package com.webutils.abstracts;
 
 public abstract class AbstractResponse {
 

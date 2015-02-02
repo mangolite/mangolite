@@ -1,6 +1,16 @@
-package com.webutils;
+package com.webutils.abstracts;
 
 public abstract class AbstractUser {
+	
+	private String name = "GUEST";
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	private String username;
 
@@ -54,12 +64,6 @@ public abstract class AbstractUser {
 
 	public int getSessionTimout() {
 		return this.sessionTimeOut;
-	}
-
-	private boolean setTimeOut = false;
-
-	public boolean isSetTimeOut() {
-		return this.setTimeOut;
 	}
 
 	public abstract void auth(String userName, String passWord);

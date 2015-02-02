@@ -1,4 +1,4 @@
-package com.webutils;
+package com.webutils.manager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -7,6 +7,7 @@ import java.util.Set;
 import org.reflections.Reflections;
 
 import com.utils.Log;
+import com.webutils.abstracts.AbstractUser;
 import com.webutils.annotations.RxModel;
 import com.webutils.annotations.RxModel.ModelType;
 

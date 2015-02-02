@@ -1,11 +1,11 @@
-package com.webutils;
+package com.webutils.abstracts;
 
 /**
  * @author <a href="mailto:lalit.tanwar07@gmail.com">Lalit Tanwar</a>
  * @version 1.0
  * @lastModified Jul 17, 2014
  */
-public class WebSockRequest extends AbstractWebRequest  {
+public class WebSockRequest extends WebRequest  {
 	public WebSockRequest(String data) {
 		super(data);
 	}

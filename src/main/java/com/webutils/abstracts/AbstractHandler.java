@@ -1,4 +1,4 @@
-package com.webutils;
+package com.webutils.abstracts;
 
 /**
  * @author <a mailto:lalit.tanwar07@gmail.com> Lalit Tanwar</a>

@@ -1,4 +1,4 @@
-package com.webutils;
+package com.webutils.app;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -9,9 +9,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.utils.Log;
-import com.utils.UniqueID;
+import com.webutils.WebContextUtil;
+import com.webutils.WebUtilsConstants;
+import com.webutils.abstracts.AbstractUser;
 
-public class AccessInterceptor implements HandlerInterceptor {
+public class WebAppHttpInterceptor implements HandlerInterceptor {
 	private static final Log LOG = new Log();
 	public static final String JSESSIONID = "JSESSIONID";
 	public static final String EMPTY_STRING = "";
@@ -34,19 +36,21 @@ public class AccessInterceptor implements HandlerInterceptor {
 			return true;
 		} else {
 			HttpSession session = request.getSession(true);
-			user = (AbstractUser) session.getAttribute("currentSessionUser");
+			user = (AbstractUser) session
+					.getAttribute(WebUtilsConstants.CURRENT_SESSION_USER);
 			if (user == null) {
-				user = AbstractWebAppClient.getUser();
-				session.setAttribute("currentSessionUser",user);
+				user = WebAppClient.getUser();
+				session.setAttribute(WebUtilsConstants.CURRENT_SESSION_USER,
+						user);
 				user.setSessionID(session.getId());
 				session.setMaxInactiveInterval(60);
 			}
-			if (user == null) {
-				response.sendError(AUTH_ERROR_CODE, AUTH_ERROR_MESSAGE);
-				return false;
-			}
+			// if (user == null) {
+			// response.sendError(AUTH_ERROR_CODE, AUTH_ERROR_MESSAGE);
+			// return false;
+			// }
 		}
-		WebAppContext.setUser(user);
+		WebContextUtil.get().setUser(user);
 		return true;
 	}
 
@@ -61,18 +65,19 @@ public class AccessInterceptor implements HandlerInterceptor {
 			HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		try {
-			AbstractUser user = WebAppContext.getUser();
+			AbstractUser user = WebContextUtil.get().getUser();
 			if (user != null) {
-				if(WebAppContext.wasUserValidated()){
-					HttpSession session = request.getSession(true);
-					//request.getSession().
-					//request.login(user.getUsername(), user.getPassword());
-					session.setMaxInactiveInterval(user.getSessionTimout()*60);
+				HttpSession session = request.getSession(true);
+				if (WebContextUtil.get().wasUserValidated()) {
+
+					session.setMaxInactiveInterval(user.getSessionTimout() * 60);
+				} else if (WebContextUtil.get().wasUserInValidated()) {
+					session.invalidate();
 				}
 				// UPDATE CAHCE
 			}
 		} finally {
-			WebAppContext.clear();
+			WebContextUtil.clear();
 		}
 	}
 

@@ -1,50 +1,67 @@
-package com.webutils;
+package com.webutils.app;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.utils.JsonUtil;
 import com.utils.Log;
-import com.webutils.annotations.AppProperties;
+import com.webutils.WebContextUtil;
+import com.webutils.abstracts.AbstractHandler;
+import com.webutils.abstracts.AbstractUser;
+import com.webutils.abstracts.HandlerResponse;
+import com.webutils.abstracts.WebRequest;
 import com.webutils.annotations.HandlerScan;
 import com.webutils.annotations.ModelScan;
+import com.webutils.manager.HandlerManager;
+import com.webutils.manager.ModelManager;
 
 /**
  * @author <a mailto:lalit.tanwar07@gmail.com> Lalit Tanwar</a>
  * @version 1.0
  * @lastModified Aug 19, 2014
  */
-public class AbstractWebAppClient {
+public class WebAppClient {
 
 	private static final Log LOG = new Log();
 
 	public static HandlerManager handlerManager = new HandlerManager();
 	public static ModelManager modelManager = new ModelManager();
-	private static WebAppProperties properties = new WebAppProperties();
 
-	public static WebAppProperties getProperties() {
-		return properties;
+	private static WebAppProperties staticProperties;
+
+	@Autowired
+	public WebAppClient(WebAppProperties myWebAppProperties,
+			StompTunnelClient stompTunnelClient) {
+		staticProperties = myWebAppProperties;
+		stompClient = stompTunnelClient;
+	}
+
+	public static WebAppProperties getWebAppProperties() {
+		return staticProperties;
+	}
+
+	private static StompTunnelClient stompClient;
+
+	public void setStompClient(StompTunnelClient stompClientInstance) {
+		stompClient = stompClientInstance;
+	}
+
+	public static StompTunnelClient getStompClient() {
+		return stompClient;
+	}
+
+	public static WebAppContext getContext() {
+		return WebContextUtil.get();
 	}
 
 	{
-		try {
-			InputStream ini = this
-					.getClass()
-					.getClassLoader()
-					.getResourceAsStream(
-							this.getClass().getAnnotation(AppProperties.class)
-									.value());
-			properties.scan(ini);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	{
 
+		LOG.info("Scanning Handlers...");
 		handlerManager.scan(this.getClass().getAnnotation(HandlerScan.class)
 				.value());
+		LOG.info("Scanning Models...");
 		modelManager.scan(this.getClass().getAnnotation(ModelScan.class)
 				.value());
 	}
@@ -64,16 +81,15 @@ public class AbstractWebAppClient {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	public HandlerResponse invokeHanldler(String handlerName,
+	public static HandlerResponse invokeHanldler(String handlerName,
 			String actionName, String data) throws IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AbstractHandler handeler = handlerManager.getHandlerMapping().get(
 				handlerName);
 		Method md = handlerManager.getActionMapping().get(
 				handlerName + "_" + actionName);
+		HandlerResponse resp = new HandlerResponse();
 		if (md != null) {
-			HandlerResponse resp = new HandlerResponse();
-
 			Class<?>[] paramClazzes = md.getParameterTypes();
 			Object arglist[] = new Object[paramClazzes.length];
 			for (int i = 0; i < paramClazzes.length; i++) {
@@ -81,15 +97,25 @@ public class AbstractWebAppClient {
 				if (HandlerResponse.class.isAssignableFrom(paramClazz)) {
 					arglist[i] = resp;
 				} else if (AbstractUser.class.isAssignableFrom(paramClazz)) {
-					arglist[i] = WebAppContext.getUser();
+					arglist[i] = WebContextUtil.get().getUser();
 				} else {
 					arglist[i] = JsonUtil.fromJson(data, paramClazz);
 				}
 			}
-			resp.setData(md.invoke(handeler, arglist));
-			return resp;
-		} else {
-			return null;
-		}
+			Object respObject = md.invoke(handeler, arglist);
+			if (respObject != null) {
+				resp.setData(respObject);
+			}
+		} 
+		StompTunnelClient.done(resp);
+		return resp;
 	}
+
+	public static HandlerResponse invokeHanldler(String handlerName,
+			String actionName, WebRequest webRequest)
+			throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException {
+		return invokeHanldler(handlerName, actionName, webRequest.getData());
+	}
+
 }

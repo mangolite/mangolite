@@ -1,10 +1,11 @@
-package com.webutils;
+package com.webutils.app;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.webutils.ResourceMinifyFilterErrorReporter;
+import com.webutils.ResourceWriter;
+import com.webutils.WebUtilsEnum;
+import com.webutils.manager.ResourcePackages;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 
@@ -51,7 +56,7 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
  * @version 1.0
  */
 
-public abstract class AsbtractResourceMinifyFilter implements Filter {
+public class WebAppResourceMinifyFilter implements Filter {
 
 	private static final String PARAM_LINEBREAK = "line-break";
 	private static final String PARAM_WARN = "warn";
@@ -63,7 +68,9 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 	private static final String BUNDLE_LIST_PARAM = "$";
 	private static final String LIST_DELIMETER = ",";
 	private static final String NO_MIN_PARAM = "no";
+
 	private static final ResourcePackages packages = new ResourcePackages();
+	private static Map<String, String> cache = new Hashtable<String, String>();
 	protected FilterConfig filterConfig;
 
 	/**
@@ -118,10 +125,18 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 		packages.scanResources(filterConfig.getServletContext());
 	}
 
-	public abstract Map<String, String> getCache();
+	public Map<String, String> getCache() {
+		return cache;
+	}
 
 	public String filterURI(String requestURI) {
-		return requestURI;
+		return requestURI.replaceAll(
+				WebAppClient.getWebAppProperties().getStaticAppPathMatch(),
+				WebAppClient.getWebAppProperties().getStaticAppPath())
+				.replaceAll(
+						WebAppClient.getWebAppProperties()
+								.getStaticLibPathMatch(),
+						WebAppClient.getWebAppProperties().getStaticLibPath());
 	}
 
 	public void doFilter(ServletRequest servletRequest,
@@ -163,7 +178,7 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			if (bundleParam != null) {
 				String cb = request.getParameter("cb");
 				writePacks(writer, bundleParam.split(LIST_DELIMETER), cb);
-			} else if (AbstractWebAppClient.getProperties()
+			} else if (WebAppClient.getWebAppProperties()
 					.isMinResourcesEnabled(fileType) && !skipMinification) {
 				writeMinifiedFiles(writer, context, requestURI, fileType,
 						inputStream, files);
@@ -224,8 +239,8 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 			WebUtilsEnum.FILE_TYPE fileType, InputStream inputStream,
 			ResourceWriter writer) throws IOException {
 		String s;
-		if (!AbstractWebAppClient.getProperties().isResoucesCacheEnabled(
-				fileType)
+		if (!WebAppClient.getWebAppProperties()
+				.isResoucesCacheEnabled(fileType)
 				|| !getCache().containsKey(requestURI)) {
 			if (fileType == WebUtilsEnum.FILE_TYPE.JS) {
 				s = getCompressedJavaScript(inputStream, requestURI);
@@ -235,7 +250,7 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 				s = "This file format is not supported by this filter. Only .css and .js are supported";
 			}
 
-			if (AbstractWebAppClient.getProperties().isResoucesCacheEnabled(
+			if (WebAppClient.getWebAppProperties().isResoucesCacheEnabled(
 					fileType))
 				getCache().put(requestURI, s);
 		} else {
@@ -310,6 +325,11 @@ public abstract class AsbtractResourceMinifyFilter implements Filter {
 		urlPatterns.add("*.json");
 		urlPatterns.add("*.html");
 		return urlPatterns;
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
 	}
 
 }

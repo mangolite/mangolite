@@ -1,4 +1,4 @@
-package com.webutils;
+package com.webutils.manager;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
 import com.utils.JsonUtil;
+import com.webutils.app.WebAppClient;
 
 public class ResourcePackages {
 
@@ -36,9 +37,9 @@ public class ResourcePackages {
 	private Map<String, Map<String, List<String>>> moduleCache = new Hashtable<String, Map<String, List<String>>>();
 
 	public void scanResources(ServletContext context) {
-		this.scanPacks(context, AbstractWebAppClient.getProperties()
+		this.scanPacks(context, WebAppClient.getWebAppProperties()
 				.getStaticLibPath());
-		this.scanPacks(context, AbstractWebAppClient.getProperties()
+		this.scanPacks(context, WebAppClient.getWebAppProperties()
 				.getStaticAppPath());
 	}
 
@@ -91,7 +92,7 @@ public class ResourcePackages {
 			if (AT_KEY.equals(packEntry.getKey())) {
 				dependsOn = Arrays.asList(file.split(AT_SEPERATOR));
 			} else {
-				packFiles.add(AbstractWebAppClient.getProperties()
+				packFiles.add(WebAppClient.getWebAppProperties()
 						.getAppContext() + fileFolder + file);
 			}
 		}
