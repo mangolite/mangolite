@@ -2,6 +2,7 @@ package com.webutils.manager;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -35,12 +36,18 @@ public class ResourcePackages {
 	private Map<String, String> moduleFiles = new Hashtable<String, String>();
 
 	private Map<String, Map<String, List<String>>> moduleCache = new Hashtable<String, Map<String, List<String>>>();
+	private Long lastScanTime = 0L;
 
 	public void scanResources(ServletContext context) {
 		this.scanPacks(context, WebAppClient.getWebAppProperties()
 				.getStaticLibPath());
 		this.scanPacks(context, WebAppClient.getWebAppProperties()
 				.getStaticAppPath());
+		this.lastScanTime = (new Date()).getTime();
+	}
+
+	public Long getLastScanTime() {
+		return lastScanTime;
 	}
 
 	public void scanPacks(ServletContext context, String path) {

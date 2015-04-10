@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +161,16 @@ public class WebAppResourceMinifyFilter implements Filter {
 		}
 
 		if (!requestedURI.startsWith(WEBJAR_PATH)) {
+
+			if (WebAppClient.getWebAppProperties().isBuildBuild()
+					&& !("XMLHttpRequest".equals(request
+							.getHeader("X-Requested-With")))) {
+				Long nowTime = (new Date()).getTime();
+				if((nowTime-packages.getLastScanTime())>3000){
+					packages.scanResources(filterConfig.getServletContext());
+				}
+			}
+
 			String requestURI = filterURI(requestedURI);
 			InputStream inputStream = context.getResourceAsStream(requestURI);
 			if (inputStream == null) {

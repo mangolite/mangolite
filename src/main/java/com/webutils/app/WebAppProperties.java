@@ -16,6 +16,12 @@ public class WebAppProperties {
 
 	private static Properties props = new Properties();
 
+	@Value("${build.debug}")
+	private boolean buildBuild;
+	public boolean isBuildBuild() {
+		return this.buildBuild;
+	}
+
 	@Value("${server.context-path}")
 	private String appContext;
 	@Value("${resources.static.lib-path}")
