@@ -30,7 +30,7 @@ public abstract class AbstractDataController {
 		return "index";
 	}
 
-	@RequestMapping(value = "/data/{handlerName}/{actionName}", method = RequestMethod.POST)
+	@RequestMapping(value = "/json/{handlerName}/{actionName}", method = RequestMethod.POST)
 	@ResponseBody
 	public HandlerResponse data(String data,
 			@PathVariable("handlerName") String handlerName,
