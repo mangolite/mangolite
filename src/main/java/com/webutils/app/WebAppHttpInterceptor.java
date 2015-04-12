@@ -76,7 +76,9 @@ public class WebAppHttpInterceptor implements HandlerInterceptor {
 				}
 				// UPDATE CAHCE
 			}
-		} finally {
+		} catch (Exception e){
+			LOG.error("afterComplettion", e);
+		}finally {
 			WebContextUtil.clear();
 		}
 	}
