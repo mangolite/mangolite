@@ -72,7 +72,7 @@ dependencies {
 
 //	compile "javax.servlet:javax.servlet-api:3.0.1"
 //	compile "javax.servlet.jsp:jsp-api:2.2"
-	compile project(":libs:utils")
+	compile project(":utils")
 
 	testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
 	testCompile "org.apache.tomcat.embed:tomcat-embed-core:$tomcatVersion"
