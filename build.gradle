@@ -13,7 +13,7 @@ buildscript {
 		}
 	}
 	dependencies { 
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.4.RELEASE") 
 		classpath ('org.ajoberstar:gradle-git:0.2.3')
 	}
 }
@@ -26,18 +26,6 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-          parent { 
-            groupId 'org.springframework.boot'
-            artifactId 'spring-boot-starter-parent'
-            version "${springBootVersion}"
-          }
-        }
-    }
-}
 
 jar {
 	baseName = 'mangolite'
@@ -131,7 +119,7 @@ artifacts {
 signing {
 	sign configurations.archives
 }
-    
+
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -146,6 +134,12 @@ uploadArchives {
                packaging 'jar'
                description 'Web Utils is basic java utility for project'
                url 'https://gitlab.com/org.spamjs/utils.git'
+               
+	            parent {
+	               groupId 'org.springframework.boot'
+	               artifactId 'spring-boot-starter-parent'
+	               version '1.1.6.RELEASE'
+	            }
  
                scm {
                    url 'scm:git@gitlab.com:org.spamjs/utils.git'
