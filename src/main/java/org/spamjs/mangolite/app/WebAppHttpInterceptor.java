@@ -12,16 +12,39 @@ import org.spamjs.utils.Log;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebAppHttpInterceptor.
+ */
 public class WebAppHttpInterceptor implements HandlerInterceptor {
+	
+	/** The Constant LOG. */
 	private static final Log LOG = new Log();
+	
+	/** The Constant JSESSIONID. */
 	public static final String JSESSIONID = "JSESSIONID";
+	
+	/** The Constant EMPTY_STRING. */
 	public static final String EMPTY_STRING = "";
+	
+	/** The Constant AUTH_ERROR_CODE. */
 	public static final int AUTH_ERROR_CODE = 401;
+	
+	/** The Constant AUTH_ERROR_MESSAGE. */
 	public static final String AUTH_ERROR_MESSAGE = "Un-Authorised Request";
+	
+	/** The Constant BYPASS_URL_PREFIX. */
 	public static final String BYPASS_URL_PREFIX = "/auth/";
+	
+	/** The Constant RESOURCES_URL_PREFIX. */
 	public static final String RESOURCES_URL_PREFIX = "/resources";
+	
+	/** The Constant COOKIES_PATH. */
 	public static final String COOKIES_PATH = "/";
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
+	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
@@ -53,12 +76,18 @@ public class WebAppHttpInterceptor implements HandlerInterceptor {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerInterceptor#postHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.springframework.web.servlet.ModelAndView)
+	 */
 	@Override
 	public void postHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 	}
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerInterceptor#afterCompletion(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, java.lang.Exception)
+	 */
 	@Override
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
@@ -82,6 +111,12 @@ public class WebAppHttpInterceptor implements HandlerInterceptor {
 		}
 	}
 
+	/**
+	 * Extract session id.
+	 *
+	 * @param cookies the cookies
+	 * @return the string
+	 */
 	public static String extractSessionId(Cookie[] cookies) {
 		String jSessionID = EMPTY_STRING;
 		if (cookies != null) {
@@ -95,18 +130,44 @@ public class WebAppHttpInterceptor implements HandlerInterceptor {
 		return jSessionID;
 	}
 
+	/**
+	 * Gets the session cookie.
+	 *
+	 * @param user the user
+	 * @return the session cookie
+	 */
 	public static Cookie getSessionCookie(AbstractUser user) {
 		return getSessionCookie(user, EMPTY_STRING);
 	}
 
+	/**
+	 * Gets the session cookie.
+	 *
+	 * @return the session cookie
+	 */
 	public static Cookie getSessionCookie() {
 		return getSessionCookie(null, EMPTY_STRING);
 	}
 
+	/**
+	 * Gets the session cookie.
+	 *
+	 * @param user the user
+	 * @param defaultValue the default value
+	 * @return the session cookie
+	 */
 	public static Cookie getSessionCookie(AbstractUser user, String defaultValue) {
 		return getSessionCookie(user, defaultValue, COOKIES_PATH);
 	}
 
+	/**
+	 * Gets the session cookie.
+	 *
+	 * @param user the user
+	 * @param defaultValue the default value
+	 * @param path the path
+	 * @return the session cookie
+	 */
 	public static Cookie getSessionCookie(AbstractUser user,
 			String defaultValue, String path) {
 		Cookie cookie = null;

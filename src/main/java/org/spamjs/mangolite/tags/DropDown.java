@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 
 import org.spamjs.utils.JsonUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is used for creating "dropdown" field.
  * 
@@ -496,13 +497,13 @@ public class DropDown extends AbstractTag {
 	}
 
 	/**
-	 * Traverses options & makes body.
+	 * Traverses options and makes body.
 	 *
 	 * @param options
 	 *            the options
 	 * @param prepend
 	 *            the prepend
-	 * @return A map, which contains body, first key & first display
+	 * @return A map, which contains body, first key and first display
 	 */
 	public Map<String, Object> traverseOptions(
 			List<Map<String, Object>> options, String prepend) {
@@ -626,12 +627,8 @@ public class DropDown extends AbstractTag {
 	/**
 	 * Get html from json options.
 	 *
-	 * @param body
-	 *            the body
-	 * @param options
-	 *            the options
-	 * @param reply
-	 *            the reply
+	 * @param options            the options
+	 * @param reply            the reply
 	 * @return the html from json options
 	 */
 	private Map<String, Object> getHtmlFromJsonOptions(

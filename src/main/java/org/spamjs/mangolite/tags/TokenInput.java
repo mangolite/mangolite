@@ -8,6 +8,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 import org.spamjs.utils.Log;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is used for creating "tokeninput" field. Used for calendar widget.
  * 

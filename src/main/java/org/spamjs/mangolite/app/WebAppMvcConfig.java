@@ -4,13 +4,18 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author <a mailto:lalit.tanwar07@gmail.com> Lalit Tanwar</a>
+ * The Class WebAppMvcConfig.
+ *
+ * @author <a href="mailto:lalit.tanwar07@gmail.com"> Lalit Tanwar</a>
  * @version 1.0
- * @lastModified Aug 19, 2014
  */
 public class WebAppMvcConfig extends WebMvcConfigurerAdapter {
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry)
+	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// currently not using these configs
@@ -19,6 +24,9 @@ public class WebAppMvcConfig extends WebMvcConfigurerAdapter {
 		// registry.addResourceHandler("/js").addResourceLocations("/js/").setCachePeriod(31556926);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry)
+	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new WebAppHttpInterceptor());

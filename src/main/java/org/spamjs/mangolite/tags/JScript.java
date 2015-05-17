@@ -13,6 +13,7 @@ import javax.servlet.jsp.tagext.Tag;
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 import org.spamjs.utils.FileUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * This is JSP tag, makes it possible to include java-script in JSP using
  * relative path and code snippet, no need to add or specify version or
@@ -43,7 +44,10 @@ public class JScript extends AbstractTag {
 	/** The Constant SCRIPT_SUFFIX. */
 	private static final String SCRIPT_SUFFIX = "?v=" + "Website.getDebugTime()" + "' ></script><script>";
 	// private static final String SCRIPT_SRC = "src";
+	/** The Constant CLEAN_SCRIPT_CLASS. */
 	private static final String CLEAN_SCRIPT_CLASS = "<script class=''  ></script>";
+	
+	/** The Constant CLEAN_SCRIPT_EMPTY. */
 	private static final String CLEAN_SCRIPT_EMPTY = "<script></script>";
 
 	/** The file chache. */

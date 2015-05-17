@@ -13,15 +13,29 @@ import org.spamjs.mangolite.annotations.ActionHandler;
 import org.spamjs.mangolite.annotations.HandlerAction;
 import org.spamjs.utils.Log;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author <a mailto:lalit.tanwar07@gmail.com> Lalit Tanwar</a>
+ * The Class HandlerManager.
+ *
+ * @author <a href="mailto:lalit.tanwar07@gmail.com"> Lalit Tanwar</a>
  * @version 1.0
- * @lastModified Aug 19, 2014
  */
 public class HandlerManager {
+	
+	/** The Constant LOG. */
 	private static final Log LOG = new Log();
+	
+	/** The handler mapping. */
 	private Map<String, AbstractHandler> handlerMapping = new ConcurrentHashMap<String, AbstractHandler>();
+	
+	/** The action mapping. */
 	private Map<String, Method> actionMapping = new ConcurrentHashMap<String, Method>();
+	
+	/**
+	 * Scan.
+	 *
+	 * @param handlerScanPath the handler scan path
+	 */
 	public void scan(String handlerScanPath) {
 		// System.out.println("+++++"+handlerScanPath);
 
@@ -61,18 +75,38 @@ public class HandlerManager {
 		}
 	}
 
+	/**
+	 * Gets the handler mapping.
+	 *
+	 * @return the handler mapping
+	 */
 	public Map<String, AbstractHandler> getHandlerMapping() {
 		return handlerMapping;
 	}
 
+	/**
+	 * Sets the handler mapping.
+	 *
+	 * @param handlerMapping the handler mapping
+	 */
 	public void setHandlerMapping(Map<String, AbstractHandler> handlerMapping) {
 		this.handlerMapping = handlerMapping;
 	}
 
+	/**
+	 * Gets the action mapping.
+	 *
+	 * @return the action mapping
+	 */
 	public Map<String, Method> getActionMapping() {
 		return actionMapping;
 	}
 
+	/**
+	 * Sets the action mapping.
+	 *
+	 * @param actionMapping the action mapping
+	 */
 	public void setActionMapping(Map<String, Method> actionMapping) {
 		this.actionMapping = actionMapping;
 	}

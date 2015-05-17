@@ -12,10 +12,18 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebAppHandshakeInterceptor.
+ */
 public class WebAppHandshakeInterceptor implements HandshakeInterceptor {
 
+	/** The Constant LOG. */
 	private static final Log LOG = new Log();
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.socket.server.HandshakeInterceptor#beforeHandshake(org.springframework.http.server.ServerHttpRequest, org.springframework.http.server.ServerHttpResponse, org.springframework.web.socket.WebSocketHandler, java.util.Map)
+	 */
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request,
 			ServerHttpResponse response, WebSocketHandler wsHandler,
@@ -35,6 +43,9 @@ public class WebAppHandshakeInterceptor implements HandshakeInterceptor {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.springframework.web.socket.server.HandshakeInterceptor#afterHandshake(org.springframework.http.server.ServerHttpRequest, org.springframework.http.server.ServerHttpResponse, org.springframework.web.socket.WebSocketHandler, java.lang.Exception)
+	 */
 	public void afterHandshake(ServerHttpRequest request,
 			ServerHttpResponse response, WebSocketHandler wsHandler,
 			Exception ex) {

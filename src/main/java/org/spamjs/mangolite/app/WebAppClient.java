@@ -16,20 +16,33 @@ import org.spamjs.utils.JsonUtil;
 import org.spamjs.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author <a mailto:lalit.tanwar07@gmail.com> Lalit Tanwar</a>
+ * The Class WebAppClient.
+ *
+ * @author <a href="mailto:lalit.tanwar07@gmail.com"> Lalit Tanwar</a>
  * @version 1.0
- * @lastModified Aug 19, 2014
  */
 public class WebAppClient {
 
+	/** The Constant LOG. */
 	private static final Log LOG = new Log();
 
+	/** The handler manager. */
 	public static HandlerManager handlerManager = new HandlerManager();
+	
+	/** The model manager. */
 	public static ModelManager modelManager = new ModelManager();
 
+	/** The static properties. */
 	private static WebAppProperties staticProperties;
 
+	/**
+	 * Instantiates a new web app client.
+	 *
+	 * @param myWebAppProperties the my web app properties
+	 * @param stompTunnelClient the stomp tunnel client
+	 */
 	@Autowired
 	public WebAppClient(WebAppProperties myWebAppProperties,
 			StompTunnelClient stompTunnelClient) {
@@ -37,20 +50,41 @@ public class WebAppClient {
 		stompClient = stompTunnelClient;
 	}
 
+	/**
+	 * Gets the web app properties.
+	 *
+	 * @return the web app properties
+	 */
 	public static WebAppProperties getWebAppProperties() {
 		return staticProperties;
 	}
 
+	/** The stomp client. */
 	private static StompTunnelClient stompClient;
 
+	/**
+	 * Sets the stomp client.
+	 *
+	 * @param stompClientInstance the new stomp client
+	 */
 	public void setStompClient(StompTunnelClient stompClientInstance) {
 		stompClient = stompClientInstance;
 	}
 
+	/**
+	 * Gets the stomp client.
+	 *
+	 * @return the stomp client
+	 */
 	public static StompTunnelClient getStompClient() {
 		return stompClient;
 	}
 
+	/**
+	 * Gets the context.
+	 *
+	 * @return the context
+	 */
 	public static WebAppContext getContext() {
 		return WebContextUtil.get();
 	}
@@ -65,6 +99,15 @@ public class WebAppClient {
 				.value());
 	}
 
+	/**
+	 * Gets the user.
+	 *
+	 * @return the user
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
+	 */
 	public static AbstractUser getUser() throws InstantiationException,
 			IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
@@ -72,13 +115,15 @@ public class WebAppClient {
 	}
 
 	/**
-	 * @param handlerName
-	 * @param actionName
-	 * @param message
-	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * Invoke hanldler.
+	 *
+	 * @param handlerName the handler name
+	 * @param actionName the action name
+	 * @param data the data
+	 * @return the handler response
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public static HandlerResponse invokeHanldler(String handlerName,
 			String actionName, String data) throws IllegalAccessException,
@@ -110,6 +155,17 @@ public class WebAppClient {
 		return resp;
 	}
 
+	/**
+	 * Invoke hanldler.
+	 *
+	 * @param handlerName the handler name
+	 * @param actionName the action name
+	 * @param webRequest the web request
+	 * @return the handler response
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
+	 */
 	public static HandlerResponse invokeHanldler(String handlerName,
 			String actionName, WebRequest webRequest)
 			throws IllegalAccessException, IllegalArgumentException,

@@ -10,6 +10,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 
 import org.spamjs.utils.JsonUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is used to create a list of radio buttons / checkboxes.
  * 

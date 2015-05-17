@@ -8,6 +8,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.web.servlet.support.JspAwareRequestContext;
 import org.springframework.web.servlet.support.RequestContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * This is the abstract class, used for creating all the JSP custom tags.
  * 
@@ -823,12 +824,23 @@ public abstract class AbstractTag extends BodyTagSupport {
 	}
 
 	// custom attributes
+	/** The data content. */
 	private String dataContent;
 
+	/**
+	 * Gets the data content.
+	 *
+	 * @return the data content
+	 */
 	public String getDataContent() {
 		return dataContent;
 	}
 
+	/**
+	 * Sets the data content.
+	 *
+	 * @param dataContent the new data content
+	 */
 	public void setDataContent(String dataContent) {
 		this.dataContent = dataContent;
 	}

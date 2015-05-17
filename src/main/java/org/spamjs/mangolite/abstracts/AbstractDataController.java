@@ -20,8 +20,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AbstractDataController.
+ */
 public abstract class AbstractDataController {
 
+	/**
+	 * Index.
+	 *
+	 * @param modelAndView the model and view
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@RequestMapping(value = "/webappindex/**", method = RequestMethod.GET)
 	public String index(ModelAndView modelAndView) throws IOException {
 		//appClient.getProperties().getAppContext();
@@ -29,6 +40,19 @@ public abstract class AbstractDataController {
 		return "index";
 	}
 
+	/**
+	 * Data.
+	 *
+	 * @param data the data
+	 * @param handlerName the handler name
+	 * @param actionName the action name
+	 * @param req the req
+	 * @return the handler response
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
+	 */
 	@RequestMapping(value = "/json/{handlerName}/{actionName}", method = RequestMethod.POST)
 	@ResponseBody
 	public HandlerResponse data(String data,
@@ -41,6 +65,17 @@ public abstract class AbstractDataController {
 	}
 	
 	
+	/**
+	 * Wrapped request.
+	 *
+	 * @param webSockRequest the web sock request
+	 * @param handlerName the handler name
+	 * @param actionName the action name
+	 * @param message the message
+	 * @param headerAccessor the header accessor
+	 * @return the abstract response
+	 * @throws Exception the exception
+	 */
 	@MessageMapping("/action/wsr/{handlerName}/{actionName}")
 	public AbstractResponse wrappedRequest(@Payload WebRequest webSockRequest,
 			@DestinationVariable("handlerName") String handlerName,
@@ -60,6 +95,12 @@ public abstract class AbstractDataController {
 				webSockRequest);
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @param accessor the accessor
+	 * @param callbackNamespace the callback namespace
+	 */
 	@SubscribeMapping("/cb/{callbackNamespace}")
 	public void init(SimpMessageHeaderAccessor accessor,
 			@DestinationVariable("callbackNamespace") String callbackNamespace) {

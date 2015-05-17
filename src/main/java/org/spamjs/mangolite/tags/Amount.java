@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.Tag;
 
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is used for creating "amount" field.
  * 

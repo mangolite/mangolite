@@ -10,6 +10,7 @@ import javax.servlet.jsp.tagext.Tag;
 
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is used for creating "button" field.
  * 
@@ -213,7 +214,7 @@ public class Button extends AbstractTag {
 	}
 
 	/**
-	 * Makes TagElement & returns it.
+	 * Makes TagElement and returns it.
 	 *
 	 * @param hotkey
 	 *            the hotkey

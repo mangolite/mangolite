@@ -9,8 +9,10 @@ import javax.servlet.jsp.tagext.Tag;
 
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 
+// TODO: Auto-generated Javadoc
 /**
- * @description To Create n-Way Toggle Tag
+ * To Create n-Way Toggle Tag
+ *
  * @author <a href="mailto:lalit.tanwar07@gmail.com">Lalit Tanwar</a>
  * @version 1.3
  * @since Nov 17, 2014

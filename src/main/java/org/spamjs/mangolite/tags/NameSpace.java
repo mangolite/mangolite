@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.Tag;
 
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 
+// TODO: Auto-generated Javadoc
 /**
  * Tag to include namespace definition insdie JSP pages.
  *

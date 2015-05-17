@@ -10,20 +10,26 @@ import javax.servlet.jsp.tagext.BodyTag;
 import org.spamjs.mangolite.tags.TagElement.ElementType;
 import org.spamjs.utils.Log;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class AccessCheck.
+ *
  * @author <a href="mailto:lalit.tanwar07@gmail.com">Lalit Tanwar</a>
  * @version 2.3
  * @since Aug 30, 2012
- * 
  */
 public class AccessCheck extends AbstractTag {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The Constant TAG_TYPE. */
 	private static final String TAG_TYPE = "access_key";
 
-	/** The LOG object for logging all log events to a log file */
+	/**  The LOG object for logging all log events to a log file. */
 	private static final Log LOG = new Log();
 
+	/** The access key. */
 	private String accessKey;
 
 	/*
@@ -35,6 +41,8 @@ public class AccessCheck extends AbstractTag {
 	 */
 
 	/**
+	 * Gets the access key.
+	 *
 	 * @return the accessKey
 	 */
 	public String getAccessKey() {
@@ -42,8 +50,9 @@ public class AccessCheck extends AbstractTag {
 	}
 
 	/**
-	 * @param accessKey
-	 *            the accessKey to set
+	 * Sets the access key.
+	 *
+	 * @param accessKey            the accessKey to set
 	 */
 	public void setAccessKey(String accessKey) {
 		this.accessKey = accessKey;
@@ -54,8 +63,6 @@ public class AccessCheck extends AbstractTag {
 	 * EVAL_BODY_BUFFERED.
 	 *
 	 * @return EVAL_BODY_BUFFERED
-	 * @throws JspException
-	 *             if an error occurred while processing this tag
 	 * @see BodyTag#doStartTag
 	 */
 	@Override

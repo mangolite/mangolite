@@ -1,22 +1,47 @@
+group = 'org.spamjs'
+version = '0.0.0'
+
+def sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+def springBootVersion = "1.1.4.RELEASE"
+
 buildscript {
 	repositories {
 		mavenLocal()
 		mavenCentral()
+		maven {
+			url  '$sonatypeRepositoryUrl'
+		}
 	}
 	dependencies { 
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.4.RELEASE") 
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
 		classpath ('org.ajoberstar:gradle-git:0.2.3')
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'project-report'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
+install {
+    repositories.mavenInstaller {
+        pom.project {
+          parent { 
+            groupId 'org.springframework.boot'
+            artifactId 'spring-boot-starter-parent'
+            version "${springBootVersion}"
+          }
+        }
+    }
+}
+
 jar {
-	baseName = 'gs-messaging-stomp-websocket'
-	version =  '0.1.0'
+	baseName = 'mangolite'
+	version =  '0.0.0'
 	manifest {
 		attributes 'Implementation-Title': 'Gradle Quickstart', 'Implementation-Version': version
 	}
@@ -69,10 +94,11 @@ dependencies {
 	compile "jstl:jstl:1.2"
 	compile "org.aspectj:aspectjweaver:1.7.0"
 	compile "org.aspectj:aspectjrt:1.7.0"
+	compile "org.spamjs:utils:0.0.0"
 
 //	compile "javax.servlet:javax.servlet-api:3.0.1"
 //	compile "javax.servlet.jsp:jsp-api:2.2"
-	compile project(":utils")
+//	compile project(":utils")
 
 	testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
 	testCompile "org.apache.tomcat.embed:tomcat-embed-core:$tomcatVersion"
@@ -85,3 +111,63 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) { gradleVersion = '1.11' }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+ 
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+	sign configurations.archives
+}
+    
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+ 
+            repository(url: sonatypeRepositoryUrl) {
+              authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+ 
+            pom.project {
+               name 'mangolite'
+               packaging 'jar'
+               description 'Web Utils is basic java utility for project'
+               url 'https://gitlab.com/org.spamjs/utils.git'
+ 
+               scm {
+                   url 'scm:git@gitlab.com:org.spamjs/utils.git'
+                   connection 'scm:git@gitlab.com:org.spamjs/utils.git'
+                   developerConnection 'scm:git@gitlab.com:org.spamjs/utils.git'
+               }
+ 
+               licenses {
+                   license {
+                       name 'The Apache Software License, Version 2.0'
+                       url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                       distribution 'repo'
+                   }
+               }
+ 
+               developers {
+                   developer {
+                       id 'lalit.tanwar07'
+                       name 'Lalit Tanwar'
+                   }
+               }
+           }
+        }
+    }
+}

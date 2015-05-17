@@ -10,9 +10,16 @@ import org.spamjs.mangolite.annotations.RxModel;
 import org.spamjs.mangolite.annotations.RxModel.ModelType;
 import org.spamjs.utils.Log;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ModelManager.
+ */
 public class ModelManager {
+	
+	/** The Constant LOG. */
 	private static final Log LOG = new Log();
 
+	/** The user constructor. */
 	private static Constructor<?> userConstructor;
 	static {
 		try {
@@ -22,10 +29,24 @@ public class ModelManager {
 		}
 	}
 
+	/**
+	 * Gets the user.
+	 *
+	 * @return the user
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
+	 */
 	public AbstractUser getUser() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		return (AbstractUser) userConstructor.newInstance();
 	}
 	
+	/**
+	 * Scan.
+	 *
+	 * @param modelScanPath the model scan path
+	 */
 	public void scan(String modelScanPath) {
 		Reflections modelReflections = new Reflections(modelScanPath);
 		Set<Class<?>> modelAnnotated = modelReflections

@@ -28,6 +28,7 @@ import org.spamjs.mangolite.manager.ResourcePackages;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 
+// TODO: Auto-generated Javadoc
 /**
  * Servlet Filter to Minify JavaScript and CSS files on the fly, currently it
  * uses YUI compressor, it can be changed
@@ -38,18 +39,22 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
  * 
  *
  * <p>
- * <filter> <display-name>Files Minify Filter</display-name>
- * <filter-name>ResourceMinifyFilter</filter-name>
- * <filter-class>com.dfferentia.filter.ResourceMinifyFilter</filter-class>
- * <init-param> <param-name>preserve-semi</param-name>
- * <param-value>true</param-value> </init-param> </filter> <filter-mapping>
- * <filter-name>ResourceMinifyFilter</filter-name>
- * <url-pattern>*.js</url-pattern> <dispatcher>REQUEST</dispatcher>
- * </filter-mapping> <filter-mapping>
- * <filter-name>ResourceMinifyFilter</filter-name>
- * <url-pattern>*.css</url-pattern> <dispatcher>REQUEST</dispatcher>
- * </filter-mapping> <servlet-mapping> <servlet-name>appServlet</servlet-name>
- * <url-pattern>/</url-pattern> </servlet-mapping>
+ * &lt;filter&gt; &lt;display-name&gt;Files Minify Filter&lt;/display-name&gt;
+ * &lt;filter-name&gt;ResourceMinifyFilter&lt;/filter-name&gt;
+ * &lt;filter-class&gt;
+ * org.spamjs.mangolite.app.ResourceMinifyFilter&lt;/filter-class&gt;
+ * &lt;init-param&gt; &lt;param-name&gt;preserve-semi&lt;/param-name&gt;
+ * &lt;param-value&gt;true&lt;/param-value&gt; &lt;/init-param&gt;
+ * &lt;/filter&gt; &lt;filter-mapping&gt;
+ * &lt;filter-name&gt;ResourceMinifyFilter&lt;/filter-name&gt;
+ * &lt;url-pattern&gt;*.js&lt;/url-pattern&gt;
+ * &lt;dispatcher&gt;REQUEST&lt;/dispatcher&gt; &lt;/filter-mapping&gt;
+ * &lt;filter-mapping&gt;
+ * &lt;filter-name&gt;ResourceMinifyFilter&lt;/filter-name&gt;
+ * &lt;url-pattern&gt;*.css&lt;/url-pattern&gt;
+ * &lt;dispatcher&gt;REQUEST&lt;/dispatcher&gt; &lt;/filter-mapping&gt;
+ * &lt;servlet-mapping&gt; &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;
+ * &lt;url-pattern&gt;/&lt;/url-pattern&gt; &lt;/servlet-mapping&gt;
  * <p>
  * 
  * 
@@ -60,42 +65,65 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 
 public class WebAppResourceMinifyFilter implements Filter {
 
+	/** The Constant PARAM_LINEBREAK. */
 	private static final String PARAM_LINEBREAK = "line-break";
+
+	/** The Constant PARAM_WARN. */
 	private static final String PARAM_WARN = "warn";
+
+	/** The Constant PARAM_NOMUNGE. */
 	private static final String PARAM_NOMUNGE = "nomunge";
+
+	/** The Constant JS_CONTENT_TYPE. */
 	private static final String JS_CONTENT_TYPE = "application/x-javascript; charset=UTF-8";
+
+	/** The Constant CSS_CONTENT_TYPE. */
 	private static final String CSS_CONTENT_TYPE = "text/css; charset=UTF-8";
+
+	/** The Constant WEBJAR_PATH. */
 	private static final String WEBJAR_PATH = "/webjars/";
+
+	/** The Constant FILES_LIST_PARAM. */
 	private static final String FILES_LIST_PARAM = "@";
+
+	/** The Constant BUNDLE_LIST_PARAM. */
 	private static final String BUNDLE_LIST_PARAM = "$";
+
+	/** The Constant LIST_DELIMETER. */
 	private static final String LIST_DELIMETER = ",";
+
+	/** The Constant NO_MIN_PARAM. */
 	private static final String NO_MIN_PARAM = "no";
 
+	/** The Constant packages. */
 	private static final ResourcePackages packages = new ResourcePackages();
+
+	/** The cache. */
 	private static Map<String, String> cache = new Hashtable<String, String>();
+
+	/** The filter config. */
 	protected FilterConfig filterConfig;
 
-	/**
-	 * Insert a line break after the specified column number
-	 */
+	/** Insert a line break after the specified column number. */
 	protected int lineBreakPos = -1;
 
-	/**
-	 * Display possible errors in the code
-	 */
+	/** Display possible errors in the code. */
 	protected boolean warn = false;
 
-	/**
-	 * Minify only, do not obfuscate
-	 */
+	/** Minify only, do not obfuscate. */
 	protected boolean munge = true;
 
-	/**
-	 * Preserve unnecessary semicolons
-	 */
+	/** Preserve unnecessary semicolons. */
 	protected boolean preserveAllSemiColons = false;
+
+	/** The disable optimizations. */
 	protected boolean disableOptimizations = false;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 */
 	public void init(FilterConfig filterConfig) throws ServletException {
 
 		this.filterConfig = filterConfig;
@@ -127,10 +155,22 @@ public class WebAppResourceMinifyFilter implements Filter {
 		packages.scanResources(filterConfig.getServletContext());
 	}
 
+	/**
+	 * Gets the cache.
+	 *
+	 * @return the cache
+	 */
 	public Map<String, String> getCache() {
 		return cache;
 	}
 
+	/**
+	 * Filter uri.
+	 *
+	 * @param requestURI
+	 *            the request uri
+	 * @return the string
+	 */
 	public String filterURI(String requestURI) {
 		return requestURI.replaceAll(
 				WebAppClient.getWebAppProperties().getStaticAppPathMatch(),
@@ -141,6 +181,12 @@ public class WebAppResourceMinifyFilter implements Filter {
 						WebAppClient.getWebAppProperties().getStaticLibPath());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 */
 	public void doFilter(ServletRequest servletRequest,
 			ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
@@ -167,7 +213,7 @@ public class WebAppResourceMinifyFilter implements Filter {
 					&& !("XMLHttpRequest".equals(request
 							.getHeader("X-Requested-With")))) {
 				Long nowTime = (new Date()).getTime();
-				if((nowTime-packages.getLastScanTime())>3000){
+				if ((nowTime - packages.getLastScanTime()) > 3000) {
 					packages.scanResources(filterConfig.getServletContext());
 				}
 			}
@@ -202,6 +248,18 @@ public class WebAppResourceMinifyFilter implements Filter {
 		}
 	}
 
+	/**
+	 * Write packs.
+	 *
+	 * @param writer
+	 *            the writer
+	 * @param packs
+	 *            the packs
+	 * @param cb
+	 *            the cb
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void writePacks(ResourceWriter writer, String[] packs, String cb)
 			throws IOException {
 		// PrintWriter printWriter = response.getWriter();
@@ -209,6 +267,24 @@ public class WebAppResourceMinifyFilter implements Filter {
 		writer.getPrintWriter().close();
 	}
 
+	/**
+	 * Write minified files.
+	 *
+	 * @param writer
+	 *            the writer
+	 * @param context
+	 *            the context
+	 * @param requestURI
+	 *            the request uri
+	 * @param fileType
+	 *            the file type
+	 * @param inputStream
+	 *            the input stream
+	 * @param files
+	 *            the files
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void writeMinifiedFiles(ResourceWriter writer,
 			ServletContext context, String requestURI,
 			WebUtilsEnum.FILE_TYPE fileType, InputStream inputStream,
@@ -231,6 +307,20 @@ public class WebAppResourceMinifyFilter implements Filter {
 		writer.getPrintWriter().close();
 	}
 
+	/**
+	 * Write original files.
+	 *
+	 * @param writer
+	 *            the writer
+	 * @param context
+	 *            the context
+	 * @param inputStream
+	 *            the input stream
+	 * @param files
+	 *            the files
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void writeOriginalFiles(ResourceWriter writer,
 			ServletContext context, InputStream inputStream, String[] files)
 			throws IOException {
@@ -247,6 +337,20 @@ public class WebAppResourceMinifyFilter implements Filter {
 		writer.getOutputStream().flush();
 	}
 
+	/**
+	 * Write minified file to servlet output stream.
+	 *
+	 * @param requestURI
+	 *            the request uri
+	 * @param fileType
+	 *            the file type
+	 * @param inputStream
+	 *            the input stream
+	 * @param writer
+	 *            the writer
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void writeMinifiedFileToServletOutputStream(String requestURI,
 			WebUtilsEnum.FILE_TYPE fileType, InputStream inputStream,
 			ResourceWriter writer) throws IOException {
@@ -272,22 +376,29 @@ public class WebAppResourceMinifyFilter implements Filter {
 	}
 
 	/**
-	 * Write s to servletOutputStream
+	 * Write s to servletOutputStream.
 	 *
 	 * @param s
+	 *            the s
 	 * @param writer
+	 *            the writer
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private void write(String s, ResourceWriter writer) throws IOException {
 		writer.getPrintWriter().print(s);
 	}
 
 	/**
-	 * Note that the inputStream is closed!
+	 * Note that the inputStream is closed!.
 	 *
 	 * @param inputStream
+	 *            the input stream
 	 * @param requestURI
+	 *            the request uri
+	 * @return the compressed java script
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private String getCompressedJavaScript(InputStream inputStream,
 			String requestURI) throws IOException {
@@ -312,10 +423,13 @@ public class WebAppResourceMinifyFilter implements Filter {
 	}
 
 	/**
-	 * Note that the inputStream is closed!
+	 * Note that the inputStream is closed!.
 	 *
 	 * @param inputStream
+	 *            the input stream
+	 * @return the compressed css
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private String getCompressedCss(InputStream inputStream) throws IOException {
 		InputStreamReader isr = new InputStreamReader(inputStream);
@@ -330,6 +444,11 @@ public class WebAppResourceMinifyFilter implements Filter {
 		return buffer.toString();
 	}
 
+	/**
+	 * Gets the resourcerl patterns.
+	 *
+	 * @return the resourcerl patterns
+	 */
 	public List<String> getResourcerlPatterns() {
 		List<String> urlPatterns = new ArrayList<String>();
 		urlPatterns.add("*.js");
@@ -339,6 +458,11 @@ public class WebAppResourceMinifyFilter implements Filter {
 		return urlPatterns;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#destroy()
+	 */
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub

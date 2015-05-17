@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 
 import org.spamjs.utils.JsonUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * Currency Toggle, supports inverse values.
  *
